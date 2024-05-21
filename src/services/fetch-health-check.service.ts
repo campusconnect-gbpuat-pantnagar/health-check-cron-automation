@@ -11,12 +11,12 @@ export class FetchHealthCheckService {
     try {
       const response = await this.httpService.axiosRef.get(url);
       if (response.status == 200) {
-        if (response.data.includes('HEALTHY')) {
-          console.log(` ${url} : Service is healthy`);
+        if (response.data && response.data.includes('HEALTHY')) {
+          this.logger.debug(` ${url} : Service is healthy`);
         }
       }
     } catch (error) {
-      this.logger.error('Error fetching forex conversion rate:', error);
+      this.logger.error('Error', error);
       throw error;
     }
   }
