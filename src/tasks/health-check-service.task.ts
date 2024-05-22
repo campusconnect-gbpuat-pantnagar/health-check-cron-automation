@@ -80,14 +80,15 @@ export class HealthCheckService {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async checkAndSendAlerts() {
     const now = new Date();
 
     for (const [serviceName, status] of Object.entries(this.healthStatus)) {
       if (status.lastDownTime) {
         const downDuration = now.getTime() - status.lastDownTime.getTime();
-        const tenMinutes = 10 * 60 * 1000; // 15 minutes in milliseconds
+        const tenMinutes = 10 * 1000; // 10 seconds in milliseconds
+        // const tenMinutes = 10 * 60 * 1000; // 10 minutes in milliseconds
 
         if (downDuration >= tenMinutes) {
           this.logger.log(
@@ -103,6 +104,7 @@ export class HealthCheckService {
               githubRepoUrl: status.githubRepoUrl,
               deploymentUrl: status.deploymentUrl,
             };
+            this.logger.debug(`Starting the Mail service for ${user.email}`);
             await this._mailService.sendMail({
               to: user.email,
               from: `Newrelic CampusConnect ${this._configService.get<string>('SMTP_SERVICE_EMAIL')}`,
