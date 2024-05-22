@@ -105,7 +105,7 @@ export class HealthCheckService {
             await this._mailService.sendMail({
               to: user.email,
               from: `Newrelic CampusConnect ${this._configService.get<string>('SMTP_SERVICE_EMAIL')}`,
-              subject: `Emergency: Service Failure Alert 💥💥`,
+              subject: `Emergency: Service Failure Alert ⚠️`,
               template: 'service-alert',
               context,
             });
