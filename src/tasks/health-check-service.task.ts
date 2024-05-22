@@ -80,15 +80,15 @@ export class HealthCheckService {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async checkAndSendAlerts() {
     const now = new Date();
 
     for (const [serviceName, status] of Object.entries(this.healthStatus)) {
       if (status.lastDownTime) {
         const downDuration = now.getTime() - status.lastDownTime.getTime();
-        const tenMinutes = 10 * 1000; // 10 seconds in milliseconds
-        // const tenMinutes = 10 * 60 * 1000; // 10 minutes in milliseconds
+        // const tenMinutes = 10 * 1000; // 10 seconds in milliseconds
+        const tenMinutes = 10 * 60 * 1000; // 10 minutes in milliseconds
 
         if (downDuration >= tenMinutes) {
           this.logger.log(
