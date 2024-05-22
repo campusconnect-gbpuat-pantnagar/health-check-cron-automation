@@ -62,6 +62,7 @@ export class HealthCheckService {
     deploymentUrl: string,
     isHealthy: boolean,
   ) {
+    this.logger.warn(this.healthStatus);
     if (!this.healthStatus[serviceName]) {
       this.healthStatus[serviceName] = {
         serviceName,
@@ -79,17 +80,17 @@ export class HealthCheckService {
     }
   }
 
-  @Cron('0 */15 * * * *')
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async checkAndSendAlerts() {
     const now = new Date();
 
     for (const [serviceName, status] of Object.entries(this.healthStatus)) {
       if (status.lastDownTime) {
         const downDuration = now.getTime() - status.lastDownTime.getTime();
-        const tenMinutes = 15 * 60 * 1000; // 15 minutes in milliseconds
+        const tenMinutes = 10 * 60 * 1000; // 15 minutes in milliseconds
 
         if (downDuration >= tenMinutes) {
-          console.log(
+          this.logger.log(
             `The service ${serviceName} (${status.healthcheckUrl}) has been down for more than 10 minutes.`,
           );
           const usersDetails = await this._fetchUrlDataService.getUserDetails();
@@ -109,7 +110,7 @@ export class HealthCheckService {
               template: 'service-alert',
               context,
             });
-            console.log('Mail sent successfully', user.email);
+            this.logger.debug('Mail sent successfully', user.email);
           }
           this.healthStatus[serviceName].lastDownTime = null;
         }
