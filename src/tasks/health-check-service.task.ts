@@ -25,7 +25,7 @@ export class HealthCheckService {
     private _mailService: MailerService,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_30_SECONDS)
   async HealthCheckServiceInEVERY_10_SECONDS() {
     try {
       const healthCheckUrls = await this._fetchUrlDataService.getServiceUrls();

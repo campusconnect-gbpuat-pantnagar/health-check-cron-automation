@@ -7,6 +7,8 @@ import { FetchUrlDataService } from './services/fetch-url-data.service';
 import { HttpModule } from '@nestjs/axios';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import * as path from 'path';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,7 +33,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
           },
         },
         template: {
-          dir: process.cwd() + '/templates/',
+          dir: path.resolve(__dirname, '../templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
